@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101a30">
+<title>Esi & Kwesi | The Grand Ballroom</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy: #101a30;
+  --navy2: #192944;
+  --gold: #d9b77e;
+  --gold-light: #f0d9aa;
+  --ivory: #f8f0e3;
+  --muted: #c9b99f;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--navy);
+  color: var(--ivory);
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+}
+
+button, input, textarea { font: inherit; }
+
+.opening {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background:
+    radial-gradient(ellipse at center, rgba(57,70,91,.45), transparent 55%),
+    linear-gradient(120deg, #0a1222, #17243b, #0a1222);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: visibility 1.8s;
+}
+
+.opening::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 12%, rgba(240,217,170,.18), transparent 25%),
+    linear-gradient(90deg, transparent, rgba(217,183,126,.06), transparent);
+}
+
+.door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  z-index: 3;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.14) 0 3px,
+      transparent 3px 35px),
+    linear-gradient(90deg, #091222, #24334c 45%, #111c30);
+  border: 2px solid rgba(217,183,126,.45);
+  box-shadow: inset 0 0 55px rgba(0,0,0,.7);
+  transition: transform 3.2s cubic-bezier(.72,0,.18,1);
+}
+
+.door.left {
+  left: 0;
+  border-right: 3px solid var(--gold);
+  transform-origin: left center;
+}
+
+.door.right {
+  right: 0;
+  border-left: 3px solid var(--gold);
+  transform-origin: right center;
+}
+
+.door::after {
+  content: "✦";
+  position: absolute;
+  top: 50%;
+  color: var(--gold);
+  font-size: 30px;
+  transform: translateY(-50%);
+}
+
+.door.left::after { right: 24px; }
+.door.right::after { left: 24px; }
+
+.door-handle {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 15px var(--gold);
+}
+
+.door.left .door-handle { right: 45px; }
+.door.right .door-handle { left: 45px; }
+
+.opening-content {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding: 25px;
+  transition: opacity .8s, transform .8s;
+}
+
+.opening-content .small {
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.opening-content h1 {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(58px, 12vw, 100px);
+  font-weight: 400;
+  margin: 20px 0 10px;
+  color: var(--gold-light);
+}
+
+.opening-content p {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.enter-btn {
+  margin-top: 35px;
+  padding: 15px 32px;
+  background: transparent;
+  color: var(--gold-light);
+  border: 1px solid var(--gold);
+  letter-spacing: 3px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.enter-btn:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.opening.opened .door.left { transform: translateX(-105%); }
+.opening.opened .door.right { transform: translateX(105%); }
+.opening.opened .opening-content {
+  opacity: 0;
+  transform: scale(.9);
+  pointer-events: none;
+}
+
+.opening.hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ballroom {
+  position: relative;
+  min-height: 100vh;
+  padding: 75px 20px 90px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 12%, rgba(217,183,126,.18), transparent 30%),
+    radial-gradient(ellipse at 50% 75%, rgba(36,59,88,.5), transparent 55%),
+    linear-gradient(180deg, #101a30, #192944 55%, #0d1729);
+}
+
+.ballroom::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .35;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 80% 15%, var(--gold), transparent),
+    radial-gradient(1px 1px at 65% 55%, white, transparent),
+    radial-gradient(2px 2px at 30% 75%, var(--gold), transparent);
+  background-size: 180px 180px;
+}
+
+.chandelier {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 145px;
+  opacity: .85;
+  pointer-events: none;
+}
+
+.chandelier .chain {
+  width: 2px;
+  height: 55px;
+  background: linear-gradient(var(--gold), transparent);
+  margin: auto;
+}
+
+.chandelier .body {
+  width: 160px;
+  height: 55px;
+  margin: auto;
+  border-top: 3px solid var(--gold);
+  border-radius: 50%;
+  position: relative;
+  filter: drop-shadow(0 0 14px rgba(240,217,170,.55));
+}
+
+.chandelier .body::before,
+.chandelier .body::after {
+  content: "✧";
+  position: absolute;
+  top: 8px;
+  color: var(--gold-light);
+  font-size: 24px;
+}
+
+.chandelier .body::before { left: 18px; }
+.chandelier .body::after { right: 18px; }
+
+.chandelier .lights {
+  color: var(--gold-light);
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 13px;
+  text-shadow: 0 0 18px var(--gold);
+  margin-top: -5px;
+}
+
+.light-beam {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  width: 60%;
+  height: 500px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(240,217,170,.1), transparent);
+  clip-path: polygon(43% 0, 57% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.top-ornament {
+  color: var(--gold);
+  font-size: 22px;
+  letter-spacing: 12px;
+  margin-bottom: 24px;
+}
+
+.main-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(68px, 13vw, 118px);
+  font-weight: 400;
+  color: var(--gold-light);
+  line-height: 1.1;
+  margin: 24px 0 5px;
+  text-shadow: 0 4px 30px rgba(217,183,126,.2);
+}
+
+.ampersand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px;
+  color: var(--gold);
+  font-style: italic;
+  margin: 4px 0;
+}
+
+.invitation-line {
+  max-width: 500px;
+  margin: 25px auto 35px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 23px;
+  line-height: 1.7;
+  color: var(--ivory);
+}
+
+.gold-rule {
+  width: 100px;
+  height: 1px;
+  background: var(--gold);
+  margin: 28px auto;
+  position: relative;
+}
+
+.gold-rule::after {
+  content: "✦";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #17243b;
+  padding: 0 12px;
+  color: var(--gold);
+}
+
+.photo-frame {
+  width: min(360px, 85vw);
+  margin: 40px auto;
+  padding: 10px;
+  border: 1px solid rgba(217,183,126,.7);
+  background: rgba(255,255,255,.025);
+  box-shadow: 0 20px 65px rgba(0,0,0,.35);
+  position: relative;
+}
+
+.photo-frame::before,
+.photo-frame::after {
+  content: "✦";
+  position: absolute;
+  color: var(--gold);
+  font-size: 19px;
+  top: -13px;
+}
+
+.photo-frame::before { left: -9px; }
+.photo-frame::after { right: -9px; }
+
+.photo-frame img {
+  width: 100%;
+  display: block;
+  max-height: 460px;
+  object-fit: cover;
+}
+
+.photo-caption {
+  margin-top: 14px;
+  font-family: 'Great Vibes', cursive;
+  font-size: 31px;
+  color: var(--gold-light);
+}
+
+.section {
+  padding: 65px 20px;
+  position: relative;
+  background: #111d32;
+  text-align: center;
+}
+
+.section:nth-of-type(even) {
+  background: #172640;
+}
+
+.section-inner {
+  max-width: 750px;
+  margin: auto;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(34px, 7vw, 48px);
+  color: var(--gold-light);
+  margin: 15px 0;
+}
+
+.section-copy {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 21px;
+  line-height: 1.8;
+  color: #e7dccb;
+}
+
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 35px auto 10px;
+}
+
+.time-box {
+  min-width: 75px;
+  padding: 18px 12px;
+  border: 1px solid rgba(217,183,126,.5);
+  background: rgba(255,255,255,.025);
+}
+
+.time-box strong {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 35px;
+  font-weight: 400;
+  color: var(--gold-light);
+}
+
+.time-box span {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin: 35px 0;
+}
+
+.detail-card {
+  padding: 28px 15px;
+  border: 1px solid rgba(217,183,126,.35);
+  background: rgba(255,255,255,.025);
+}
+
+.detail-card .symbol {
+  font-size: 24px;
+  color: var(--gold);
+}
+
+.detail-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25px;
+  font-weight: 400;
+  color: var(--gold-light);
+  margin: 13px 0 8px;
+}
+
+.detail-card p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.gold-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 14px 25px;
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  text-decoration: none;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: .3s;
+}
+
+.gold-btn:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.rsvp-form {
+  max-width: 470px;
+  margin: 30px auto 0;
+  text-align: left;
+}
+
+.rsvp-form label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin: 18px 0 8px;
+  text-transform: uppercase;
+}
+
+.rsvp-form input,
+.rsvp-form select,
+.rsvp-form textarea {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(217,183,126,.4);
+  background: #0e192b;
+  color: var(--ivory);
+  outline: none;
+  border-radius: 0;
+}
+
+.rsvp-form button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 16px;
+  background: var(--gold);
+  border: none;
+  color: #101a30;
+  font-size: 10px;
+  letter-spacing: 3px;
+  cursor: pointer;
+}
+
+#rsvp-message {
+  text-align: center;
+  color: var(--gold-light);
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+.footer {
+  text-align: center;
+  padding: 55px 20px;
+  background: #0a1322;
+}
+
+.footer h2 {
+  font-family: 'Great Vibes', cursive;
+  color: var(--gold-light);
+  font-size: 52px;
+  font-weight: 400;
+  margin: 10px;
+}
+
+.footer p {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media(max-width: 600px) {
+  .ballroom { padding-top: 100px; }
+  .chandelier { transform: translateX(-50%) scale(.8); }
+  .details-grid { grid-template-columns: 1fr; }
+  .invitation-line { font-size: 21px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- GRAND BALLROOM ENTRANCE -->
+<div class="opening" id="opening">
+  <div class="door left"><div class="door-handle"></div></div>
+  <div class="door right"><div class="door-handle"></div></div>
+
+  <div class="opening-content">
+    <div class="small">You are cordially invited</div>
+    <h1>Esi & Kwesi</h1>
+    <p>A celebration of love</p>
+    <button class="enter-btn" onclick="enterBallroom()">ENTER THE BALLROOM</button>
+  </div>
+</div>
+
+<!-- MAIN BALLROOM -->
+<main>
+<section class="ballroom">
+  <div class="chandelier">
+    <div class="chain"></div>
+    <div class="body"></div>
+    <div class="lights">✧ ✧ ✧</div>
+  </div>
+  <div class="light-beam"></div>
+
+  <div class="content">
+    <div class="top-ornament reveal">✦ ✧ ✦</div>
+    <p class="eyebrow reveal">Together with their families</p>
+
+    <h1 class="main-title reveal">Esi</h1>
+    <div class="ampersand reveal">&</div>
+    <h1 class="main-title reveal">Kwesi</h1>
+
+    <div class="gold-rule reveal"></div>
+
+    <p class="invitation-line reveal">
+      With hearts full of joy and gratitude,
+      we invite you to celebrate the beginning
+      of our forever.
+    </p>
+
+    <p class="eyebrow reveal">Request the pleasure of your presence</p>
+
+    <div class="photo-frame reveal">
+      <img
+        src="https://i.postimg.cc/pLggJqMg/IMG-8718.jpg"
+        alt="Esi and Kwesi"
+      >
+      <div class="photo-caption">Our forever begins</div>
+    </div>
+
+    <p class="eyebrow reveal">Thursday · 10 December 2026</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner reveal">
+    <p class="eyebrow">Counting down to forever</p>
+    <h2 class="section-title">The Big Day</h2>
+    <div class="gold-rule"></div>
+
+    <div class="countdown">
+      <div class="time-box"><strong id="days">00</strong><span>Days</span></div>
+      <div class="time-box"><strong id="hours">00</strong><span>Hours</span></div>
+      <div class="time-box"><strong id="minutes">00</strong><span>Minutes</span></div>
+      <div class="time-box"><strong id="seconds">00</strong><span>Seconds</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner reveal">
+    <p class="eyebrow">Save the date</p>
+    <h2 class="section-title">Wedding Details</h2>
+    <div class="gold-rule"></div>
+
+    <div class="details-grid">
+      <div class="detail-card">
+        <div class="symbol">✧</div>
+        <h3>The Date</h3>
+        <p>Thursday<br>10 December 2026</p>
+      </div>
+
+      <div class="detail-card">
+        <div class="symbol">◷</div>
+        <h3>The Time</h3>
+        <p>9:00 in the morning</p>
+      </div>
+
+      <div class="detail-card" style="grid-column:1/-1">
+        <div class="symbol">⌖</div>
+        <h3>The Venue</h3>
+        <p>Church of Christ<br>Cantonments, Accra</p>
+        <a
+          class="gold-btn"
+          href="https://www.google.com/maps/search/?api=1&query=Church+of+Christ+Cantonments+Accra"
+          target="_blank"
+          rel="noopener"
+        >VIEW LOCATION</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner reveal">
+    <p class="eyebrow">We would love to celebrate with you</p>
+    <h2 class="section-title">Kindly RSVP</h2>
+    <p class="section-copy">
+      Your presence would mean so much to us.
+      Please let us know if you will be joining our celebration.
+    </p>
+
+    <form class="rsvp-form" id="rsvpForm">
+      <label for="guestName">Your name</label>
+      <input id="guestName" name="guestName" required placeholder="Enter your full name">
+
+      <label for="attendance">Will you be attending?</label>
+      <select id="attendance" name="attendance" required>
+        <option value="">Please select</option>
+        <option value="Joyfully accepts">Joyfully accepts</option>
+        <option value="Regretfully declines">Regretfully declines</option>
+      </select>
+
+      <label for="guests">Number of guests</label>
+      <select id="guests" name="guests">
+        <option value="1">1 guest</option>
+        <option value="2">2 guests</option>
+        <option value="3">3 guests</option>
+        <option value="4">4 guests</option>
+      </select>
+
+      <button type="submit">SEND RSVP</button>
+      <div id="rsvp-message"></div>
+    </form>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="top-ornament">✦ ✧ ✦</div>
+  <p>With love,</p>
+  <h2>Esi & Kwesi</h2>
+  <p>One love · One lifetime · Forever</p>
+</footer>
+</main>
+
+<script>
+function enterBallroom() {
+  const opening = document.getElementById('opening');
+  opening.classList.add('opened');
+
+  setTimeout(() => {
+    opening.classList.add('hidden');
+    document.body.style.overflowY = 'auto';
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }, 3300);
+}
+
+document.body.style.overflow = 'hidden';
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+function updateCountdown() {
+  const weddingDate = new Date('2026-12-10T09:00:00+00:00');
+  const now = new Date();
+  const diff = weddingDate - now;
+
+  if (diff <= 0) {
+    document.getElementById('days').textContent = '00';
+    document.getElementById('hours').textContent = '00';
+    document.getElementById('minutes').textContent = '00';
+    document.getElementById('seconds').textContent = '00';
+    return;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  document.getElementById('days').textContent = String(days).padStart(2,'0');
+  document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('minutes').textContent = String(minutes).padStart(2,'0');
+  document.getElementById('seconds').textContent = String(seconds).padStart(2,'0');
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const data = {
+    name: document.getElementById('guestName').value,
+    attendance: document.getElementById('attendance').value,
+    guests: document.getElementById('guests').value
+  };
+
+  const responses = JSON.parse(localStorage.getItem('esiKwesiRSVP') || '[]');
+  responses.push(data);
+  localStorage.setItem('esiKwesiRSVP', JSON.stringify(responses));
+
+  document.getElementById('rsvp-message').textContent =
+    'Thank you! Your response has been saved on this device.';
+
+  this.reset();
+});
+</script>
+
+</body>
+</html>
